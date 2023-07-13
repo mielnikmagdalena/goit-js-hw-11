@@ -1,5 +1,7 @@
 import axios from 'axios';
 import Notiflix from 'notiflix';
+//import SimpleLightbox from 'simplelightbox';
+//import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
@@ -65,6 +67,8 @@ async function searchImages(query, page) {
     } else {
       loadMoreBtn.style.display = 'block';
     }
+    refreshLightbox();
+    smoothScrollTo(gallery);
   } catch (error) {
     console.error(error);
     Notiflix.Notify.failure(
@@ -92,6 +96,7 @@ function createImageCard(image) {
 
   return `
     <div class="photo-card">
+    <a href="${largeImageURL}" data-lightbox="gallery" data-title="${tags}">
       <img src="${webformatURL}" alt="${tags}" loading="lazy">
       <div class="info">
         <p class="info-item"><b>Likes:</b> ${likes}</p>
@@ -101,4 +106,18 @@ function createImageCard(image) {
       </div>
     </div>
   `;
+}
+function refreshLightbox() {
+  const lightbox = new SimpleLightbox('.gallery a');
+  lightbox.refresh();
+}
+function smoothScrollTo() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
